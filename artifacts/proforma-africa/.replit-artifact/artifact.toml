@@ -12,14 +12,14 @@ version = "1.0.0"
 [[services]]
 name = "web"
 paths = [ "/" ]
-localPort = 23540
+localPort = 3000
 
 [services.development]
-run = "pnpm --filter @workspace/proforma-africa run dev"
+run = "cd /home/runner/workspace && pnpm dev"
 
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/proforma-africa", "run", "build" ]
-publicDir = "artifacts/proforma-africa/dist/public"
+build = [ "pnpm", "run", "build" ]
+publicDir = "dist"
 serve = "static"
 
 [[services.production.rewrites]]
@@ -27,5 +27,5 @@ from = "/*"
 to = "/index.html"
 
 [services.env]
-PORT = "23540"
+PORT = "3000"
 BASE_PATH = "/"
