@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green: #02F5A1;
+  --onyx: #07191E;
+  --bg: #F8FAFB;
+  --text: #0A0F0D;
+  --muted: #6B7280;
+  --border: #E5E7EB;
+  --card: #FFFFFF;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #F8FAFB;
+  color: #0A0F0D;
+}
+
+html {
+  scroll-behavior: smooth;
+}
