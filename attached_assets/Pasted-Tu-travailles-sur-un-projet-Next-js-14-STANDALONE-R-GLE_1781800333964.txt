@@ -1,0 +1,249 @@
+Tu travailles sur un projet Next.js 14 STANDALONE.
+
+⚠️ RÈGLES ABSOLUES :
+- Ce projet est un projet Next.js 14 standalone (PAS un monorepo)
+- NE PAS créer pnpm-workspace.yaml
+- NE PAS créer de dossier artifacts/
+- NE PAS changer npm vers pnpm
+- NE PAS toucher à package.json, next.config.js, tsconfig.json
+- Après chaque modification → npm run build
+- Si le build échoue → corrige immédiatement
+
+═══════════════════════════════════════════
+MISSION : Créer la Landing Page de ProformaAfrica
+═══════════════════════════════════════════
+
+Stack : Next.js 14 App Router, TypeScript
+Style : Inline styles uniquement (pas de Tailwind, pas de Shadcn)
+
+IDENTITÉ VISUELLE :
+- Couleur accent : #02F5A1 (Spring Green)
+- Fond sombre / Sidebar : #07191E (Deep Onyx)
+- Fond pages : #F8FAFB
+- Texte principal : #0A0F0D
+- Texte secondaire : #6B7280
+- Bordures : #E5E7EB
+- Police titres/logo : 'Unbounded', sans-serif (Google Fonts)
+- Police corps : 'Inter', sans-serif (Google Fonts)
+
+Importer les polices dans src/app/layout.tsx via next/font/google :
+import { Unbounded, Inter } from 'next/font/google'
+
+═══════════════════════════════════════════
+FICHIERS À CRÉER
+═══════════════════════════════════════════
+
+1. src/app/layout.tsx
+─────────────────────
+- Importer Unbounded + Inter via next/font/google
+- Appliquer les variables CSS : --font-unbounded, --font-inter
+- Metadata : title "ProformaAfrica — Facturation pour entrepreneurs africains"
+- description "Créez vos factures, devis et proformas en moins de 3 minutes"
+
+2. src/app/globals.css
+───────────────────────
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-inter); background: #F8FAFB; color: #0A0F0D; }
+:root {
+  --green: #02F5A1;
+  --onyx: #07191E;
+  --bg: #F8FAFB;
+  --text: #0A0F0D;
+  --muted: #6B7280;
+  --border: #E5E7EB;
+  --card: #FFFFFF;
+}
+
+3. src/app/page.tsx
+────────────────────
+Créer la landing page complète avec ces sections :
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NAVBAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #07191E, texte blanc
+- Logo "Proforma" blanc + "Africa" #02F5A1 (Unbounded Bold)
+- Liens navigation : Fonctionnalités | Tarifs | Comment ça marche | FAQ
+- Boutons : "Se connecter" (bordure #02F5A1 texte #02F5A1) + "S'inscrire" (fond #02F5A1 texte #07191E)
+- Sticky top, zIndex 50
+- Menu burger sur mobile (☰)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HERO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #07191E
+- Badge pill : "🚀 Conçu pour l'Afrique" — fond rgba(2,245,161,0.1) texte #02F5A1 bordure rgba(2,245,161,0.3)
+- Titre H1 (Unbounded Bold, 52px desktop / 32px mobile) :
+  "Créez vos factures et devis" saut de ligne "en moins de 3 minutes"
+  Le mot "factures" en #02F5A1
+- Sous-titre (Inter, 18px, #94A3B8) :
+  "L'outil de facturation pensé pour les freelances et entrepreneurs africains. Mobile Money, multi-devises, templates professionnels."
+- 2 boutons CTA :
+  * "Créer mon compte gratuitement" → /register (fond #02F5A1 texte #07191E, fontWeight 700)
+  * "Voir une démo" → scroll vers #comment (bordure #02F5A1 texte #02F5A1)
+- Badge sous les boutons : "✓ Gratuit · ✓ Sans carte bancaire · ✓ Prêt en 30 secondes"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STATS (fond #07191E suite)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3 stats en ligne :
+- "3 min" | "Temps moyen de création"
+- "8+" | "Templates professionnels"
+- "100%" | "Gratuit pour commencer"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FONCTIONNALITÉS (id="fonctionnalites")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #F8FAFB
+- Titre (Unbounded) : "Tout ce dont vous avez besoin"
+- Sous-titre : "Une suite complète pour gérer votre facturation"
+- 6 cartes en grille (3 colonnes desktop, 2 tablette, 1 mobile) :
+
+  ⚡ Rapide
+  "Générez un document professionnel en moins de 3 minutes chrono"
+
+  🎨 Personnalisable
+  "8 templates, palettes de couleurs, votre logo et signature"
+
+  💰 Multi-devises
+  "XOF, XAF, EUR, USD, MAD — toutes les devises africaines"
+
+  📱 Mobile Money
+  "MTN, Moov, Orange Money, Wave intégrés dans vos documents"
+
+  💾 Sauvegarde auto
+  "Tous vos documents sauvegardés et accessibles depuis votre dashboard"
+
+  📧 Envoi par email
+  "Envoyez vos documents directement à vos clients par email"
+
+- Style cartes : fond blanc, bordure #E5E7EB, borderRadius 16px
+- Icône dans cercle fond rgba(2,245,161,0.1) couleur #02F5A1
+- Hover : bordure #02F5A1, légère ombre verte
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COMMENT ÇA MARCHE (id="comment")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #07191E
+- Titre (Unbounded, blanc) : "Simple comme bonjour"
+- 3 étapes en ligne avec numéros #02F5A1 :
+  1️⃣ "Créez votre compte" — "Inscription gratuite en 30 secondes, aucune carte bancaire requise"
+  2️⃣ "Configurez votre entreprise" — "Logo, IFU, signature — rempli une fois, utilisé partout"
+  3️⃣ "Générez et envoyez" — "PDF professionnel prêt en quelques secondes"
+- Flèches → entre les étapes (desktop)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TARIFS (id="tarifs")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #F8FAFB
+- Titre (Unbounded) : "Des tarifs pensés pour l'Afrique"
+- 2 cartes côte à côte :
+
+GRATUIT — 0 XOF/mois :
+Fond blanc, bordure #E5E7EB
+✅ 3 documents par mois
+✅ 1 template classique
+✅ Export PDF
+✅ Toutes les devises africaines
+❌ Config entreprise pré-remplie
+❌ Carnet de clients
+❌ Envoi par email
+Bouton : "Commencer gratuitement" → /register
+(bordure #02F5A1, texte #02F5A1)
+
+PRO — 4 900 XOF/mois :
+Fond #07191E, texte blanc
+Badge "Populaire" fond #02F5A1 texte #07191E
+✅ Documents illimités
+✅ 8 templates professionnels
+✅ Config entreprise pré-remplie
+✅ Carnet de clients illimité
+✅ Envoi par email
+✅ Sauvegarde automatique
+✅ Support prioritaire
+Bouton : "Passer au Pro" → /register
+(fond #02F5A1 texte #07191E)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TÉMOIGNAGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #F8FAFB
+- Titre (Unbounded) : "Ils nous font confiance"
+- 7 cartes en grille (3 colonnes desktop) :
+
+1. Elton Bill — Entrepreneur, Cotonou ⭐⭐⭐⭐
+"ProformaAfrica m'a sauvé un temps précieux. En moins de 2 minutes, j'envoie des devis professionnels."
+
+2. Ben Ephraïm — Freelance, Cotonou ⭐⭐⭐⭐
+"Enfin un outil fait pour nous. Le Mobile Money intégré dans les documents, c'est exactement ce dont j'avais besoin."
+
+3. Africa Fashion Awards — Organisation ⭐⭐⭐⭐⭐
+"Les templates sont professionnels et reflètent parfaitement notre image de marque."
+
+4. Honorat Dariel — Designer, Bénin ⭐⭐⭐⭐
+"Mes clients sont impressionnés par la qualité de mes devis. Je recommande."
+
+5. Hermann Matiano — Chef de projet, Cotonou ⭐⭐⭐⭐
+"La fonctionnalité de pré-remplissage automatique est géniale. Une seule configuration et c'est parti."
+
+6. Models Academy Management — Agence, Cotonou ⭐⭐⭐⭐⭐
+"Nous gérons des dizaines de contrats chaque mois. ProformaAfrica professionnalise notre image."
+
+7. JRC Digit — Agence digitale, Bénin ⭐⭐⭐⭐
+"Un outil indispensable. Nos clients reçoivent des devis clairs et professionnels."
+
+Style cartes témoignages :
+- Fond blanc, borderRadius 12px, boxShadow léger
+- Avatar cercle 44px fond #07191E initiales #02F5A1
+- Étoiles couleur #02F5A1
+- Texte italique fontSize 14px color #374151
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FAQ (id="faq")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #07191E
+- Titre (Unbounded, blanc) : "Questions fréquentes"
+- Accordion avec 6 questions, bordure #02F5A1 sur item ouvert :
+
+Q: "Est-ce vraiment gratuit ?"
+R: "Oui, le plan gratuit donne accès à 3 documents par mois sans carte bancaire."
+
+Q: "Quels modes de paiement puis-je afficher ?"
+R: "MTN Mobile Money, Moov Money, Orange Money, Wave, virement bancaire, chèque et espèces."
+
+Q: "Mes données sont-elles sécurisées ?"
+R: "Vos données sont stockées sur Supabase avec chiffrement et politiques RLS strictes."
+
+Q: "Puis-je personnaliser avec mon logo ?"
+R: "Oui, dans Paramètres vous uploadez votre logo, signature et choisissez vos couleurs."
+
+Q: "Comment passer au plan Pro ?"
+R: "Dans votre dashboard, section Abonnement, choisissez votre plan."
+
+Q: "Quelles devises sont supportées ?"
+R: "XOF, XAF, EUR, USD, MAD et d'autres devises africaines et internationales."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CTA FINAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #02F5A1
+- Titre (Unbounded, #07191E) : "Prêt à professionnaliser votre facturation ?"
+- Bouton fond #07191E texte #02F5A1 : "Créer mon compte gratuitement" → /register
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FOOTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fond #07191E, texte blanc
+- Logo ProformaAfrica (Unbounded)
+- Liens : Mentions légales | Confidentialité | CGU
+- "Fait avec fierté au Bénin 🇧🇯"
+- Copyright © 2026 ProformaAfrica
+
+═══════════════════════════════════════════
+VÉRIFICATION FINALE
+═══════════════════════════════════════════
+1. npm run build → doit passer sans erreur
+2. Page responsive mobile/desktop
+3. NE PAS créer pnpm-workspace.yaml
+4. NE PAS créer dossier artifacts/
+5. NE PAS modifier package.json
