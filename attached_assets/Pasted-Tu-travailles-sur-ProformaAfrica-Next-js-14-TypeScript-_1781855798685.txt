@@ -1,0 +1,207 @@
+Tu travailles sur ProformaAfrica (Next.js 14, TypeScript, Supabase).
+
+⚠️ RÈGLES ABSOLUES :
+- Projet Next.js 14 STANDALONE — PAS de monorepo
+- NE PAS créer pnpm-workspace.yaml
+- NE PAS créer dossier artifacts/
+- Rester sur npm uniquement
+- NE PAS modifier src/app/page.tsx
+- NE PAS modifier src/app/(auth)/*
+- NE PAS modifier middleware.ts
+- NE PAS modifier src/lib/supabase/*
+- Après modifications → npm run build obligatoire
+
+═══════════════════════════════════════════
+MISSION : Dashboard complet avec Sidebar
+═══════════════════════════════════════════
+
+IDENTITÉ VISUELLE :
+- Accent : #02F5A1
+- Sidebar fond : #07191E
+- Fond pages : #F8FAFB
+- Texte : #0A0F0D
+- Muted : #6B7280
+- Bordures : #E5E7EB
+- Card : #FFFFFF
+- Police titres : Unbounded
+- Police corps : Inter
+
+SUPABASE tables existantes :
+- profiles (id, full_name, avatar_url, role, plan)
+- factures (id, user_id, numero, type_document, nom_client, montant_total, devise, statut, created_at)
+- clients (id, user_id, nom, entreprise, email, telephone, ville, pays)
+- services (id, user_id, nom, description, prix, unite, tva)
+- entreprise_config (id, user_id, nom, email, telephone, logo_url, signature_url, ifu, rccm, adresse, ville, pays, mode_paiement_defaut, devise_defaut)
+
+═══════════════════════════════════════════
+FICHIERS À CRÉER
+═══════════════════════════════════════════
+
+1. src/components/dashboard/Sidebar.tsx
+─────────────────────────────────────────
+DESKTOP (fixe gauche, largeur 240px, fond #07191E) :
+- Logo "Proforma" blanc + "Africa" #02F5A1 (Unbounded) en haut
+- Navigation groupée :
+
+  GÉNÉRAL
+  🏠 Tableau de bord → /dashboard
+
+  DOCUMENTS
+  📄 Factures → /dashboard/factures
+  📋 Devis → /dashboard/devis
+  📝 Proformas → /dashboard/proformas
+
+  GESTION
+  👥 Clients → /dashboard/clients
+  🛠️ Services → /dashboard/services
+
+  COMPTE (en bas)
+  ⚙️ Paramètres → /dashboard/parametres
+  💳 Abonnement → /dashboard/abonnement
+
+- Lien actif : fond rgba(2,245,161,0.15) texte #02F5A1 bordure gauche 3px #02F5A1
+- Liens inactifs : texte #94A3B8 hover fond rgba(255,255,255,0.05)
+- Icônes Phosphor déjà installées
+
+MOBILE : tiroir coulissant depuis la gauche
+- Bouton burger ☰ dans la topbar pour ouvrir
+- Overlay sombre derrière au clic ferme la sidebar
+
+2. src/components/dashboard/Topbar.tsx
+────────────────────────────────────────
+- Hauteur 64px fond blanc bordure bas #E5E7EB sticky zIndex 40
+- Gauche : bouton burger ☰ (mobile only) + titre page courante (Unbounded, 18px)
+- Droite :
+  * Avatar cercle 36px fond #07191E initiales #02F5A1 (Inter bold)
+  * Au clic → dropdown flottant :
+    - Nom + email utilisateur
+    - Lien "Paramètres" → /dashboard/parametres
+    - Séparateur
+    - Bouton rouge "Déconnexion" → supabase.auth.signOut() + redirect /
+
+3. src/app/dashboard/layout.tsx
+─────────────────────────────────
+- Sidebar fixe à gauche (desktop)
+- Topbar en haut
+- Contenu à droite avec padding
+- Vérifier session : si non connecté → redirect /login
+- Structure :
+  <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <Sidebar />
+    <div style={{ flex: 1, marginLeft: 240 }}>
+      <Topbar />
+      <main style={{ padding: '24px' }}>
+        {children}
+      </main>
+    </div>
+  </div>
+- Sur mobile : marginLeft: 0
+
+4. src/app/dashboard/page.tsx
+───────────────────────────────
+Dashboard principal avec :
+
+KPIs (4 cartes en grille) :
+- "Chiffre d'affaires" → sum factures statut='payé' — couleur #02F5A1
+- "En attente" → sum factures statut='envoyé' — couleur orange #F59E0B
+- "Documents ce mois" → count factures ce mois — couleur #6366F1
+- "Taux recouvrement" → payé/total*100 — couleur #02F5A1
+
+Bouton principal :
+"+ Créer un nouveau document" → /formulaire
+(fond #02F5A1 texte #07191E fontWeight 700 padding 12px 24px borderRadius 10px)
+
+Tableau documents récents (5 derniers) :
+- Colonnes : Date | Numéro | Type | Client | Montant | Statut | Actions
+- Badge statut coloré :
+  brouillon → gris
+  envoyé → bleu #3B82F6
+  payé → vert #02F5A1
+  en_retard → rouge #EF4444
+- Actions : Modifier | Dupliquer | Supprimer
+- Lien "Voir tous →" en bas
+
+5. src/app/dashboard/factures/page.tsx
+────────────────────────────────────────
+- Titre "Mes Factures" (Unbounded)
+- Stats : nb factures | montant payé | montant en attente
+- Filtres pills : Tous | Brouillon | Envoyé | Payé | En retard
+- Barre de recherche par numéro ou client
+- Tableau avec pagination 10/page
+- Bouton "+ Nouvelle Facture" → /formulaire?type=Facture
+
+6. src/app/dashboard/devis/page.tsx
+─────────────────────────────────────
+- Titre "Mes Devis"
+- Stats : nb devis | montant total | taux acceptation
+- Filtres : Tous | Brouillon | Envoyé | Accepté | Refusé
+- Tableau avec pagination
+- Bouton "+ Nouveau Devis" → /formulaire?type=Devis
+
+7. src/app/dashboard/proformas/page.tsx
+─────────────────────────────────────────
+- Titre "Mes Proformas"
+- Stats : nb proformas | montant total | nb envoyés
+- Filtres : Tous | Brouillon | Envoyé | Accepté
+- Tableau avec pagination
+- Bouton "+ Nouveau Proforma" → /formulaire?type=Proforma
+
+8. src/app/dashboard/clients/page.tsx
+───────────────────────────────────────
+- Titre "Mes Clients"
+- Stats : nb clients | CA total clients | meilleur client
+- Barre recherche
+- Grille de cartes clients (desktop 3 col, mobile 1 col) :
+  Chaque carte : initiales avatar, nom, entreprise, email, téléphone, nb factures
+  Boutons : Modifier | Supprimer
+- Bouton "+ Nouveau Client" → modal de création rapide
+
+9. src/app/dashboard/services/page.tsx
+────────────────────────────────────────
+- Titre "Mes Services"
+- Tableau : Nom | Description | Prix | Unité | TVA | Actions
+- Bouton "+ Nouveau Service" → modal de création
+- Modifier | Supprimer chaque service
+
+10. src/app/dashboard/parametres/page.tsx
+───────────────────────────────────────────
+- Titre "Paramètres"
+- Tabs : Entreprise | Apparence | Compte
+
+TAB ENTREPRISE (données depuis entreprise_config) :
+- Logo upload
+- Nom entreprise, Email, Téléphone
+- IFU, RCCM, Adresse, Ville, Pays
+- Signature upload
+- Nom signataire
+- IBAN, BIC, Nom banque
+- Numéro Mobile Money, Titulaire
+- Mode paiement défaut (select)
+- Devise défaut (select)
+- Bouton "Sauvegarder" → upsert dans entreprise_config
+
+TAB APPARENCE :
+- Sélecteur couleur principale (pastilles cliquables) :
+  #02F5A1 | #1A6B3C | #3B82F6 | #8B5CF6 | #F59E0B | #EF4444
+- Sélecteur police :
+  Inter | Unbounded | Poppins | Montserrat
+- Aperçu mini document avec les choix appliqués
+- Bouton "Sauvegarder"
+
+TAB COMPTE :
+- Email actuel (lecture seule)
+- Bouton "Changer le mot de passe" → /update-password
+- Zone danger : "Supprimer mon compte" (rouge)
+
+═══════════════════════════════════════════
+VÉRIFICATION FINALE
+═══════════════════════════════════════════
+1. npm run build → sans erreur TypeScript
+2. /dashboard → sidebar visible + KPIs
+3. /dashboard/factures → liste vide mais fonctionnelle
+4. /dashboard/clients → liste vide mais fonctionnelle
+5. /dashboard/parametres → formulaire visible
+6. NE PAS créer pnpm-workspace.yaml
+7. NE PAS créer dossier artifacts/
+8. NE PAS modifier src/app/page.tsx
+9. NE PAS modifier src/app/(auth)/*
