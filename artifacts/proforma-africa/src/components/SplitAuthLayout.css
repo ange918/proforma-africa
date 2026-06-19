@@ -1,0 +1,67 @@
+.split-auth-root {
+  min-height: 100vh;
+  display: flex;
+  font-family: 'Inter', sans-serif;
+}
+
+.split-auth-left {
+  display: none;
+}
+
+.split-auth-right {
+  flex: 1;
+  background: #07191E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  min-height: 100vh;
+}
+
+.split-auth-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 900px) {
+  .split-auth-left {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #07191E;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .split-auth-right {
+    flex: none;
+    width: 50%;
+    background: #F8FAFB;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.18);
+  }
+
+  .split-auth-card {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (min-width: 1200px) {
+  .split-auth-left {
+    padding: 60px;
+  }
+  .split-auth-right {
+    width: 46%;
+  }
+}
+
+@media (min-width: 900px) {
+  .mobile-logo {
+    display: none !important;
+  }
+}
