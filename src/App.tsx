@@ -1,13 +1,21 @@
 import { Switch, Route } from "wouter";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute, GuestRoute } from "./components/ProtectedRoute";
+import { DashboardLayout } from "./layouts/DashboardLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
-import Dashboard from "./pages/Dashboard";
 import AuthCallback from "./pages/AuthCallback";
+import DashboardHome from "./pages/dashboard/Home";
+import DashboardFactures from "./pages/dashboard/Factures";
+import DashboardDevis from "./pages/dashboard/Devis";
+import DashboardProformas from "./pages/dashboard/Proformas";
+import DashboardClients from "./pages/dashboard/Clients";
+import DashboardServices from "./pages/dashboard/Services";
+import DashboardParametres from "./pages/dashboard/Parametres";
+import DashboardAbonnement from "./pages/dashboard/Abonnement";
 
 function NotFound() {
   return (
@@ -16,6 +24,14 @@ function NotFound() {
       <p style={{ color: "#94A3B8", marginBottom: 24 }}>Page introuvable</p>
       <a href="/" style={{ color: "#02F5A1", textDecoration: "none", fontWeight: 600 }}>← Retour à l'accueil</a>
     </div>
+  );
+}
+
+function DB({ children }: { children: React.ReactNode }) {
+  return (
+    <ProtectedRoute>
+      <DashboardLayout>{children}</DashboardLayout>
+    </ProtectedRoute>
   );
 }
 
@@ -40,7 +56,28 @@ export default function App() {
         </Route>
 
         <Route path="/dashboard">
-          <ProtectedRoute><Dashboard /></ProtectedRoute>
+          <DB><DashboardHome /></DB>
+        </Route>
+        <Route path="/dashboard/factures">
+          <DB><DashboardFactures /></DB>
+        </Route>
+        <Route path="/dashboard/devis">
+          <DB><DashboardDevis /></DB>
+        </Route>
+        <Route path="/dashboard/proformas">
+          <DB><DashboardProformas /></DB>
+        </Route>
+        <Route path="/dashboard/clients">
+          <DB><DashboardClients /></DB>
+        </Route>
+        <Route path="/dashboard/services">
+          <DB><DashboardServices /></DB>
+        </Route>
+        <Route path="/dashboard/parametres">
+          <DB><DashboardParametres /></DB>
+        </Route>
+        <Route path="/dashboard/abonnement">
+          <DB><DashboardAbonnement /></DB>
         </Route>
 
         <Route component={NotFound} />
