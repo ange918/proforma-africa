@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "../lib/supabase/client";
-import { AuthLayout } from "../components/AuthLayout";
+import { SplitAuthLayout } from "../components/SplitAuthLayout";
 
 const GREEN = "#02F5A1";
 const ONYX = "#07191E";
@@ -54,7 +54,7 @@ export default function Login() {
   });
 
   return (
-    <AuthLayout>
+    <SplitAuthLayout>
       <h1 style={{ ...inter, fontSize: 22, fontWeight: 700, color: "#0A0F0D", textAlign: "center", marginBottom: 6 }}>
         Connectez-vous
       </h1>
@@ -123,6 +123,6 @@ export default function Login() {
         Pas de compte ?{" "}
         <a href="/register" style={{ color: GREEN, textDecoration: "none", fontWeight: 600 }}>S'inscrire</a>
       </p>
-    </AuthLayout>
+    </SplitAuthLayout>
   );
 }
