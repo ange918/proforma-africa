@@ -1,0 +1,153 @@
+Tu travailles sur ProformaAfrica (Next.js 14, TypeScript).
+
+⚠️ RÈGLES ABSOLUES :
+- Projet Next.js 14 STANDALONE — PAS de monorepo
+- NE PAS créer pnpm-workspace.yaml
+- NE PAS créer dossier artifacts/
+- Rester sur npm uniquement
+- NE PAS modifier src/app/page.tsx (landing page)
+- NE PAS modifier package.json, next.config.js, tsconfig.json
+- Après modifications → npm run build obligatoire
+
+═══════════════════════════════════════════
+MISSION : Système d'authentification Supabase
+═══════════════════════════════════════════
+
+IDENTITÉ VISUELLE :
+- Accent : #02F5A1 (Spring Green)
+- Fond sombre : #07191E (Deep Onyx)
+- Fond pages : #F8FAFB
+- Texte : #0A0F0D
+- Texte secondaire : #6B7280
+- Bordures : #E5E7EB
+- Police titres : Unbounded
+- Police corps : Inter
+
+SUPABASE :
+URL : https://lbjgapjyjpyaspfkebhg.supabase.co
+ANON KEY : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiamdhcGp5anB5YXNwZmtlYmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NzQ3NzIsImV4cCI6MjA5MzE1MDc3Mn0.tc6AairXIbujhEubsNXalSBtheBpeeJAAltiPsz2WDw
+
+DÉPENDANCES :
+npm install @supabase/ssr @supabase/supabase-js
+
+═══════════════════════════════════════════
+FICHIERS À CRÉER
+═══════════════════════════════════════════
+
+1. .env.local
+──────────────
+NEXT_PUBLIC_SUPABASE_URL=https://lbjgapjyjpyaspfkebhg.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiamdhcGp5anB5YXNwZmtlYmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NzQ3NzIsImV4cCI6MjA5MzE1MDc3Mn0.tc6AairXIbujhEubsNXalSBtheBpeeJAAltiPsz2WDw
+
+2. src/lib/supabase/client.ts
+──────────────────────────────
+import { createBrowserClient } from '@supabase/ssr'
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+
+3. src/lib/supabase/server.ts
+──────────────────────────────
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+export async function createClient() {
+  const cookieStore = await cookies()
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options))
+          } catch {}
+        },
+      },
+    }
+  )
+}
+
+4. middleware.ts (racine du projet)
+─────────────────────────────────────
+- Rafraîchissement automatique de session
+- Routes protégées : /dashboard/* → redirect /login si non connecté
+- Si connecté + accès /login ou /register → redirect /dashboard
+- Si connecté + accès / → redirect /dashboard
+
+5. src/app/auth/callback/route.ts
+───────────────────────────────────
+- Échange du code OAuth
+- Redirect /dashboard après succès
+- Redirect /login?error=auth_error si échec
+
+6. src/app/(auth)/layout.tsx
+──────────────────────────────
+- Fond #07191E plein écran
+- Card blanche centrée maxWidth 440px borderRadius 20px
+- Logo "Proforma" + "Africa" en haut de chaque card
+- Padding 40px
+
+7. src/app/(auth)/login/page.tsx
+──────────────────────────────────
+DESIGN (inline styles) :
+- Logo "Proforma" blanc "Africa" #02F5A1 (Unbounded, fontSize 24)
+- Titre "Connectez-vous" (Inter bold, #0A0F0D)
+- Bouton Google (blanc, bordure #E5E7EB, icône Google SVG)
+- Séparateur "ou" avec lignes
+- Input Email (label Inter, input bordure #E5E7EB, focus bordure #02F5A1)
+- Input Mot de passe (idem)
+- Lien "Mot de passe oublié ?" → /reset-password (couleur #02F5A1)
+- Bouton "Se connecter" (fond #02F5A1, texte #07191E, fontWeight 700, width 100%)
+- Lien "Pas de compte ? S'inscrire" → /register
+
+LOGIQUE :
+- supabase.auth.signInWithPassword({ email, password })
+- Succès → router.push('/dashboard')
+- Erreur → message rouge sous le bouton
+- Google → supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/auth/callback' }})
+
+8. src/app/(auth)/register/page.tsx
+─────────────────────────────────────
+DESIGN :
+- Même style que login
+- Titre "Créez votre compte"
+- Input Prénom + Nom
+- Input Email
+- Input Mot de passe (min 6 caractères)
+- Input Confirmer mot de passe
+- Bouton Google OAuth
+- Bouton "Créer mon compte" (fond #02F5A1 texte #07191E)
+- Lien "Déjà un compte ? Se connecter" → /login
+
+LOGIQUE :
+- Validation : mots de passe identiques, min 6 caractères
+- supabase.auth.signUp({ email, password, options: { data: { full_name } }})
+- Succès → afficher card "Vérifiez votre email 📧"
+- Erreur → message rouge
+
+9. src/app/(auth)/reset-password/page.tsx
+───────────────────────────────────────────
+- Input email
+- supabase.auth.resetPasswordForEmail()
+- Message succès vert après envoi
+- Lien retour vers /login
+
+10. src/app/(auth)/update-password/page.tsx
+─────────────────────────────────────────────
+- Input nouveau mot de passe + confirmation
+- supabase.auth.updateUser({ password })
+- Redirect /login après succès
+
+═══════════════════════════════════════════
+VÉRIFICATION FINALE
+═══════════════════════════════════════════
+1. npm run build → sans erreur
+2. /login → formulaire visible
+3. /register → formulaire visible
+4. NE PAS modifier src/app/page.tsx
+5. NE PAS créer pnpm-workspace.yaml
