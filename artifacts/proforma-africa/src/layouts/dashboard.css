@@ -1,0 +1,28 @@
+.db-shell { display: flex; min-height: 100vh; background: #F8FAFB; }
+
+.db-sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 240px; background: #07191E; z-index: 50;
+  display: flex; flex-direction: column;
+  transition: transform 0.25s ease;
+}
+
+.db-sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 49;
+}
+
+.db-main { flex: 1; margin-left: 240px; display: flex; flex-direction: column; min-height: 100vh; }
+
+@media (max-width: 768px) {
+  .db-sidebar { transform: translateX(-100%); }
+  .db-sidebar.open { transform: translateX(0); }
+  .db-sidebar-overlay.open { display: block; }
+  .db-main { margin-left: 0; }
+  .db-burger { display: flex !important; }
+  .db-topbar-title { font-size: 15px !important; }
+}
+
+@media (min-width: 769px) {
+  .db-burger { display: none !important; }
+}
